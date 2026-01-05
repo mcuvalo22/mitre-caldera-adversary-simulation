@@ -48,7 +48,18 @@ All machines are connected through an isolated **NAT Network** to ensure interna
 Detailed setup instructions and analysis can be found in the `/docs` directory.
 
 ## Team
-- Project members: Mateo Čuvalo, Niko Ivančić, Nikola Lazar, Roberto Šandro
+- **Mateo Čuvalo** – Infrastructure Engineer  
+  Responsible for designing and configuring the virtualized enterprise network and core services.
+
+- **Niko Ivančić** – Blue Team (Defense)  
+  Focused on defensive strategies, monitoring, and detection of adversary activities.
+
+- **Nikola Lazar** – Red Team (Adversary Simulation)  
+  Responsible for executing attack scenarios and adversary simulations using MITRE CALDERA.
+
+- **Roberto Šandro** – Threat Hunter Analyst  
+  Analyzed attack behavior, identified indicators of compromise, and mapped findings to the MITRE ATT&CK framework.
+
 
 ## Disclaimer
 This project is for **educational purposes only**.
