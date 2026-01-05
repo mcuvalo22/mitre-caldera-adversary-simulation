@@ -1,16 +1,29 @@
 # Adversary Simulation with MITRE CALDERA
 
-## Project Overview
-This university project demonstrates adversary simulation using the **MITRE CALDERA** framework.
-A mock enterprise network was designed and deployed in a virtualized environment to emulate real-world attack scenarios mapped to the **MITRE ATT&CK** framework.
+## Overview
+This project was developed as part of the course  
+**Information Systems Security (Sigurnost Informacijskih Sustava – SIS)**  
+at the **Faculty of Organization and Informatics (FOI)**.
 
-## Academic Context
-This project was developed as part of the course **Information Systems Security (Sigurnost Informacijskih Sustava – SIS)**  
-at the **University of Zagreb, Faculty of Organization and Informatics (FOI)**.
+The goal of the project is to design and execute a simulated cyberattack
+on a mock corporate network using **MITRE CALDERA**.
+The project includes infrastructure design, adversary emulation,
+deployment of defensive controls, and evaluation of detection effectiveness
+based on the **MITRE ATT&CK framework**.
 
-The project aims to provide hands-on experience in adversary simulation,
-enterprise network security, and attack technique mapping using the
-MITRE ATT&CK framework.
+## Objectives
+- Gain hands-on experience with adversary emulation and red/blue team workflows
+- Design and secure a realistic enterprise network
+- Execute CALDERA attack techniques mapped to MITRE ATT&CK
+- Evaluate the effectiveness of security controls
+- Develop technical documentation and incident analysis skills
+
+## Project Deliverables
+- Setup Guide (VM and network architecture, configuration)
+- Attack–Defense Matrix (ATT&CK techniques vs detection)
+- Incident Timeline with supporting evidence
+- Final Security Report
+- Demonstration of one attack and its detection/mitigation
 
 ## Infrastructure Overview
 The simulated company network consists of:
@@ -29,13 +42,6 @@ All machines are connected through an isolated **NAT Network** to ensure interna
 | WS | Windows 10 Enterprise | Employee workstation |
 | Linux | Ubuntu Server | Internal Linux server |
 | Attacker | Kali Linux / Ubuntu | MITRE CALDERA server |
-
-## Objectives
-- Design a realistic enterprise network
-- Deploy MITRE CALDERA
-- Execute adversary simulations
-- Map techniques to MITRE ATT&CK
-- Analyze attack paths and results
 
 ## Technologies Used
 - VirtualBox
