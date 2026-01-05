@@ -49,7 +49,7 @@ Detailed setup instructions and analysis can be found in the `/docs` directory.
 
 ## Team
 - Project members: Mateo Čuvalo, Niko Ivančić, Nikola Lazar, Roberto Šandro
-- 
+
 ## Disclaimer
 This project is for **educational purposes only**.
 
