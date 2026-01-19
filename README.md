@@ -77,7 +77,7 @@ rm -force "C:\Users\Public\splunkd.exe" -ea ignore;
 Start-Process -FilePath C:\Users\Public\splunkd.exe -ArgumentList "-server $server -group red" -WindowStyle hidden;
 ```
 
-## Blue Agent (Defender - blue_agent.exe)
+### Blue Agent (Defender - blue_agent.exe)
 
 Ovaj agent služi za **Blue Team** simulacije i odgovor na incidente. Dizajniran je za tihu instalaciju i komunikaciju s C2 serverom.
 
