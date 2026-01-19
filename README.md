@@ -61,6 +61,7 @@ Agenti se instaliraju na **Windows Server** (žrtvu) putem PowerShell-a.
 **Važno:** Potrebno je otvoriti PowerShell kao **Administrator** i izvršiti odgovarajuću skriptu.
 
 ### Red Agent (Sandcat - splunkd.exe)
+
 Ovaj agent simulira napadača. Skriva se pod imenom `splunkd.exe` kako bi zavarao administratore.
 
 ```powershell
